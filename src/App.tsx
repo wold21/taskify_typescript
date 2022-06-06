@@ -1,44 +1,60 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
+import InputField from './components/InputField';
+import TodoList from './components/TodoList';
+import { Todo } from './model';
 
 
-let name: string;
-let age: number;
-let student_yn: boolean;
-let hobbies: string[];
-let role: [number, string];
+// 이 App은 jSX.Element를 리턴한다.
+// 그에 대한 타입을 지정하면 React.FC 등이 있다.
+// React.ReactNode....
+const App: React.FC = () => {
+  const [todo, setTodo] = useState<string>("");
+  const [todos, setTodos] = useState<Todo[]>([]);
 
-// 객체 타입
-// type Person = {
-//   name: string;
-//   age?: number;
-// }
-// // let person:Object;
-// // 그런데 person 오브젝트에 뭐가 들어있는지 모른다.
-// // 그래서 아래와 같이 타입을 정하고 그 타입에 대한 데이터를 명시할 수 있다.
-// // 그 값은 누락될 수 없다. 만약 nullable한 변수라면 변수명 뒤에 '?'를 추가한다.
-// let person: Person = {
-//   name: 'hyuk'
-// }
+  const handleAdd = (e: React.FormEvent) =>{
+      e.preventDefault();
 
-// // 객체 배열
-// let lotOfPeople:Person[];
+      if(todo){
+        setTodos([...todos, {id:Date.now(), todo:todo, isDone:false}]);
+        setTodo("");
+      }
+  };
 
-// 타입을 한개가 아닌 두개로 쓰고 싶을 때 (Union)
+  console.log(todos);
 
-
-function App() {
   return (
     <div className="App">
-      hello world
+      <span className="heading">Taskify</span>
+      <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd}/>
+      <TodoList todos={todos} setTodos={setTodos}/>
     </div>
   );
-}
+};
 
 export default App;
 
-
-/**
- * typescript는 타입추론에 의해서 타입이 정해졌던 기본 자바스트립트와는 달리
- * 타입을 정확히 명시해주어 애매한 데이터 변수를 고정시켜 코드의 방향성에 도움을 준다.
+/** useState의
+ * useState의 set 함수는 TS에서 타입이 다음과 같다.
+ *      Dispatch<SetStateAction<Type>>
+ * 코드에서는 React.Dispatch<React.SetStateAction<string>>
+ * 이렇게 보여주고 있다.
+ * 해당 부분을 더 알아보려 했지만 일단 React에서 만든 타입이라고 한다.
+ * useState의 set함수의 인자는 Dispath에 React.SetStateAction<Generic> 타입을 가진 인자여야한다.
  */
+
+/** useRef
+ * 컴포넌트에서 특정 DOM을 선택해야 할 때 ref를 사용하고
+ * 함수형 컴포넌트에서 이를 설정할 떄 useRef를 사용하여 설정할 수 있다.
+ * useRef로 관리하는 변수는 값이 바뀐다고 해서 컴포넌트가 리렌더링되지는 않는다.
+ */
+
+/** Destructuring
+ * Javascript에서 변수에 []가 들어가는 경우는 구조분해할당이라고 해서
+ * 분해된 데이터를 할당할 변수 = 분해할 값(객체 또는 배열)으로 이루어진 형태이다.
+ * es6부터 위와 같은 스타일이 업데이트 됐다.
+ */
+
+
+
+
